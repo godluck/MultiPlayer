@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>audio</title>
+	<style type="text/css">
+	span{-webkit-transition:font-size 0.5s linear;font-size: 14px;}
+	.ontime{color:red;font-size: 20px;}
+	</style>
+</head>
+<body>
+<audio controls="controls" preload="preload" loop="loop">
+</audio>
+<input type="file">
+<div id="lyc"></div>
+<script type="text/javascript">
+	var a=document.getElementsByTagName("audio")[0];
+	var input=document.getElementsByTagName('input')[0];
+	input.onchange=function(){
+		a.src=getObjectURL(input.files[0]);
+		a.play();
+		var lyc={word:'abc\nde',time:[2000,2000,2000,2000,2000]};
+		showlyc(lyc,document.getElementById('lyc'));
+
+	}
+	function getObjectURL(file) {
+		var url = null;
+		if (window.createObjectURL != undefined) { // basic
+			url = window.createObjectURL(file);
+		} else if (window.URL != undefined) { // mozilla(firefox)
+			url = window.URL.createObjectURL(file);
+		} else if (window.webkitURL != undefined) { // webkit or chrome
+			url = window.webkitURL.createObjectURL(file);
+		}
+		return url;
+	}
+	function showlyc(lyc,targetDom){
+		var l=lyc.word.length;
+		var temp='';
+		for(var j=0;j<l;j++){
+			if(lyc.word[j]!=='\n'){
+				temp+='<span>'+lyc.word[j]+'</span>';
+			}else{
+				temp+='<br>';
+			}
+		}
+		targetDom.innerHTML=temp;
+		var i=0;
+		var t=null;
+		function next(){
+			if(i<l){
+				targetDom.getElementsByTagName('span')[i-1>=0?i-1:i].className='';
+				targetDom.getElementsByTagName('span')[i].className='ontime';
+				t=setTimeout(next,lyc.time[i]);
+			}else{
+				clearTimeout(t);
+			}
+			i+=1;
+		}
+		next();
+	}
+</script>
+</body>
+</html>
