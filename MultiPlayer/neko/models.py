@@ -9,9 +9,21 @@ class User(models.Model):
     token = models.CharField(max_length=50, null=True, blank=True)
     timestamp = models.IntegerField()  # if token==null or timestamp out then user_token out
 
+
 class Lyric(models.Model):
     user = models.ForeignKey(User, null=False, blank=False)
     song_name = models.CharField(max_length=50, null=False, blank=False)
     singer_name = models.CharField(max_length=50, null=False, blank=False)
     song_time = models.FloatField()
     lyric = models.TextField()  # lyric json
+
+    def dic(self):
+        """
+        :return:the json lyric
+        """
+        lyric = {"id": self.id,
+                 "song_name": self.song_name,
+                 "singer_name": self.singer_name,
+                 "song_time": self.song_time
+            }
+        return lyric
