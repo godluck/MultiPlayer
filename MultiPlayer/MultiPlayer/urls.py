@@ -2,6 +2,8 @@ from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
 
+from neko.views import login, logout, search, save, get
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -10,9 +12,9 @@ urlpatterns = patterns('',
                        # url(r'^blog/', include('blog.urls')),
 
                        # url(r'^admin/', include(admin.site.urls)),
-                       (r'^login$', 'login'),  # post user_id&pwd return token
-                       (r'^logout$', 'logout'),  # token => token over date
-                       (r'^search$', 'search'),  # name&token&user =>song_name&singer_name
-                       (r'^save$', 'save'),  # token+tmestamp sha1&json =>status
-                       (r'^get$', 'get'),  # id&secret&user => lyric
+                       (r'^login$', login),  # post user_id&pwd return token
+                       (r'^logout$', logout),  # token => token over date
+                       (r'^search$', search),  # name&token&user =>song_name&singer_name
+                       (r'^save$', save),  # token+tmestamp sha1&json =>status
+                       (r'^get$', get),  # id&secret&user => lyric
 )

@@ -113,3 +113,57 @@ def search(request):
     if json.check_json("status", "success"):
         time_up(user)
     json.return_json()
+
+
+
+def get(request):
+    """
+    use id to find lyric
+    :param request:
+    :return:
+    """
+    secret = request.GET.get("secret")
+    user_name = request.GET.get("user_name")
+    timestamp = request.GET.get("timestamp")
+    id = request.GET.get("id")
+    user = None
+    try:
+        user = User.objects.get(user_name=user_name)
+    except ObjectDoesNotExist:
+        json = Json({"status": "can't find this user"})
+    if check(secret, user, timestamp):
+        try:
+            lyric = Lyric.objects.get(id=id)
+            json = Json({"status": "success", "lyric": lyric})
+        except ObjectDoesNotExist:
+            json = Json({"status": "lyric can't find"})
+    else:
+         json = Json({"status": "token error"})
+    json.return_json()
+
+
+def save(request):
+    """
+
+    :param request:
+    :return:
+    """
+    user_name = request.POST.get['user_name']
+    lyric = request.POST.get['lyric']
+    song_name = request.POST.get['song_name']
+    singer_name = request.POST.get['singer_name']
+    song_time = request.POST.get['song_time']
+    json = None
+    user = None
+    try:
+        user = User.objects.get(user_name=user_name)
+    except ObjectDoesNotExist:
+        json = Json({"status": "user_name error"})
+    if json is None:
+        Lyric(user=user,
+              song_name=song_name,
+              singer_name=singer_name,
+              song_time=song_time,
+              lyric=lyric).save()
+        json = Json({"status": "success"})
+    json.return_json()
