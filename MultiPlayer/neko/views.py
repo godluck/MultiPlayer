@@ -14,7 +14,7 @@ def login(request):
     :return:status token lyrics
     """
     if request.method == 'GET':
-        json = Json({"status": "request error"})
+        json = Json({"status": "1"})
     else:
         user_name = request.POST.get('user_name')
         pwd = request.POST.get('pwd')
@@ -36,9 +36,9 @@ def login(request):
             for i in lyrics:
                 lists.append(i.dic())
 
-            json = Json({"status": "login success", "token": token, "lyrics": lists})
+            json = Json({"status": "0", "token": token, "lyrics": lists})
         else:
-            json = Json({"status": "password error"})
+            json = Json({"status": "2"})
     return json.return_json()
 
 
@@ -49,7 +49,7 @@ def logout(request):
     :return:status
     """
     if request.method == 'POST':
-        json = Json({"status": "request error"})
+        json = Json({"status": "1"})
         json.return_json()
     else:
         user_name = request.GET.get('user_name')
@@ -58,9 +58,9 @@ def logout(request):
             user.token = ''
             user.timestamp = 0
             user.save()
-            json = Json({"status": "logout success"})
+            json = Json({"status": "0"})
         except ObjectDoesNotExist:
-            json = Json({"status": "user_name error"})
+            json = Json({"status": "3"})
     return json.return_json()
 
 
@@ -107,25 +107,22 @@ def search(request):
         secret = request.GET.get("secret")
         user_name = request.GET.get("user_name")
         timestamp = request.GET.get("timestamp", '0')
-        song_name = request.GET.get("song_name")
+        song_name = request.GET.get("song_name", '')
         user = None
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
-            json = Json({"status": "can't find this user"})
+            json = Json({"status": "3"})
         if json is None:
             if check(secret, user, timestamp):
                 lists = []
-                if song_name is not None:
-                    lyrics = Lyric.objects.filter(song_name__contains=song_name)
-                    for i in lyrics:
-                        lists.append(i.dic())
-                    json = Json({"status": "success", "lyrics": lists})
-                else:
-                    json = Json({"status": "song_name error"})
+                lyrics = Lyric.objects.filter(song_name__contains=song_name)
+                for i in lyrics:
+                    lists.append(i.dic())
+                json = Json({"status": "0", "lyrics": lists})
             else:
-                json = Json({"status": "token error"})
-            if json.check_json("status", "success"):
+                json = Json({"status": "4"})
+            if json.check_json("status", "0"):
                 time_up(user)
     return json.return_json()
 
@@ -137,7 +134,7 @@ def get(request):
     :return:
     """
     if request.method == 'POST':
-        json = Json({"status": "request error"})
+        json = Json({"status": "1"})
     else:
         secret = request.GET.get("secret")
         user_name = request.GET.get("user_name")
@@ -147,16 +144,16 @@ def get(request):
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
-            json = Json({"status": "can't find this user"})
+            json = Json({"status": "3"})
         if check(secret, user, timestamp):
             try:
                 lyric = Lyric.objects.get(id=id)
-                json = Json({"status": "success", "lyric": lyric.lyric})
+                json = Json({"status": "0", "lyric": lyric.lyric})
             except ObjectDoesNotExist:
-                json = Json({"status": "lyric can't find"})
+                json = Json({"status": "5"})
         else:
-            json = Json({"status": "token error"})
-        if json.check_json("status", "success"):
+            json = Json({"status": "4"})
+        if json.check_json("status", "0"):
             time_up(user)
     return json.return_json()
 
@@ -168,7 +165,7 @@ def save(request):
     :return:
     """
     if request.method == 'GET':
-        json = Json({"status": "request error"})
+        json = Json({"status": "1"})
     else:
         user_name = request.POST.get('user_name')
         lyric = request.POST.get('lyric')
@@ -182,7 +179,7 @@ def save(request):
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
-            json = Json({"status": "user_name error"})
+            json = Json({"status": "3"})
         if check(secret,user,timestamp):
             if json is None:
                 Lyric(user=user,
@@ -190,9 +187,9 @@ def save(request):
                       singer_name=singer_name,
                       song_time=song_time,
                       lyric=lyric).save()
-                json = Json({"status": "success"})
+                json = Json({"status": "0"})
         else:
-            json = Json({"status": 'token error'})
-        if json.check_json("status", "success"):
+            json = Json({"status": '4'})
+        if json.check_json("status", "0"):
             time_up(user)
     return json.return_json()
