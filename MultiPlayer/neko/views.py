@@ -34,7 +34,7 @@ def login(request):
             lyrics = Lyric.objects.filter(user=user)
             lists = []
             for i in lyrics:
-                lists += i.dic()
+                lists.append(i.dic())
 
             json = Json({"status": "login success", "token": token, "lyrics": lists})
         else:
@@ -83,8 +83,6 @@ def check(secret, user, timestamp):  # login time 1000
     :return:status
     """
     timestamp = int(timestamp)
-    if user is None:
-        return False
     now = int(time.time())
     if (now - timestamp < 20)and(timestamp - user.timestamp < 1000):
         token = user.token
@@ -108,20 +106,20 @@ def search(request):
     else:
         secret = request.GET.get("secret")
         user_name = request.GET.get("user_name")
-        timestamp = request.GET.get("timestamp")
+        timestamp = request.GET.get("timestamp", '0')
         song_name = request.GET.get("song_name")
         user = None
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
             json = Json({"status": "can't find this user"})
-        if json is  None:
+        if json is None:
             if check(secret, user, timestamp):
                 lists = []
                 if song_name is not None:
                     lyrics = Lyric.objects.filter(song_name__contains=song_name)
                     for i in lyrics:
-                        lists += i.dic()
+                        lists.append(i.dic())
                     json = Json({"status": "success", "lyrics": lists})
                 else:
                     json = Json({"status": "song_name error"})
@@ -143,7 +141,7 @@ def get(request):
     else:
         secret = request.GET.get("secret")
         user_name = request.GET.get("user_name")
-        timestamp = request.GET.get("timestamp")
+        timestamp = request.GET.get("timestamp", '0')
         id = request.GET.get("id")
         user = None
         try:
@@ -153,7 +151,7 @@ def get(request):
         if check(secret, user, timestamp):
             try:
                 lyric = Lyric.objects.get(id=id)
-                json = Json({"status": "success", "lyric": lyric})
+                json = Json({"status": "success", "lyric": lyric.lyric})
             except ObjectDoesNotExist:
                 json = Json({"status": "lyric can't find"})
         else:
@@ -172,24 +170,29 @@ def save(request):
     if request.method == 'GET':
         json = Json({"status": "request error"})
     else:
-        user_name = request.POST.get['user_name']
-        lyric = request.POST.get['lyric']
-        song_name = request.POST.get['song_name']
-        singer_name = request.POST.get['singer_name']
-        song_time = request.POST.get['song_time']
+        user_name = request.POST.get('user_name')
+        lyric = request.POST.get('lyric')
+        song_name = request.POST.get('song_name')
+        singer_name = request.POST.get('singer_name')
+        song_time = request.POST.get('song_time')
+        secret = request.POST.get("secret")
+        timestamp = request.POST.get("timestamp")
         json = None
         user = None
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
             json = Json({"status": "user_name error"})
-        if json is None:
-            Lyric(user=user,
-                  song_name=song_name,
-                  singer_name=singer_name,
-                  song_time=song_time,
-                  lyric=lyric).save()
-            json = Json({"status": "success"})
+        if check(secret,user,timestamp):
+            if json is None:
+                Lyric(user=user,
+                      song_name=song_name,
+                      singer_name=singer_name,
+                      song_time=song_time,
+                      lyric=lyric).save()
+                json = Json({"status": "success"})
+        else:
+            json = Json({"status": 'token error'})
         if json.check_json("status", "success"):
             time_up(user)
-    json.return_json()
+    return json.return_json()
