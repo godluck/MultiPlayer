@@ -102,7 +102,7 @@ def search(request):
     """
     json = None
     if request.method == 'POST':
-        json = Json({"status": "request error"})
+        json = Json({"status": "1"})
     else:
         secret = request.GET.get("secret")
         user_name = request.GET.get("user_name")
