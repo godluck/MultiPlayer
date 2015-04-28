@@ -136,3 +136,26 @@ save
 **(status意义见返回码)**  
 
     
+up_time
+------------
+**url:**      
+  /up_time
+
+**method:**
+  GET
+
+**请求参数:**
+
+* user_name  用户名
+* pwd        密码
+* secret  算法为token + timestamp sha1 后的16位字符串
+* timestamp 时间戳，缺省值为0
+
+**返回值(json示例):**
+
+* {"status":"1"}
+* {"status":"3"}
+* {"status":"0"}
+* {"status":"4"}
+
+**(status意义见返回码)**
