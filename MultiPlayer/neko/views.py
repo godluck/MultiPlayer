@@ -193,3 +193,28 @@ def save(request):
         if json.check_json("status", "0"):
             time_up(user)
     return json.return_json()
+
+
+def up_time(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        json = Json({"status": "1"})
+    else:
+        user_name = request.GET.get('user_name')
+        secret = request.GET.get("secret")
+        timestamp = request.GET.get("timestamp")
+        user = None
+        try:
+            user = User.objects.get(user_name=user_name)
+        except ObjectDoesNotExist:
+            json = Json({"status": "3"})
+        if check(secret, user, timestamp):
+            time_up(user)
+            json = Json({"status": 0})
+        else:
+            json = Json({"status": '4'})
+    return json.return_json()

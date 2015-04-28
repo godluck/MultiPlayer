@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
 
-from neko.views import login, logout, search, save, get
+from neko.views import login, logout, search, save, get, up_time
 
 admin.autodiscover()
 
@@ -17,4 +17,5 @@ urlpatterns = patterns('',
                        (r'^search$', search),  # name&token&user =>song_name&singer_name
                        (r'^save$', save),  # token+tmestamp sha1&json =>status
                        (r'^get$', get),  # id&secret&user => lyric
+                       (r'^up_time$', up_time),  # keep login
 )
