@@ -26,11 +26,11 @@ login
 
 * {"status":"1"}
 * {"status":"2"}
-* {"status":"0","token":"44444","lyrics":{"this is the lyric json"}，{"id": self.id,
+* {"status":"0","token":"44444","lyrics":[{"this is the lyric json"}，{"id": self.id,
                  "song_name": self.song_name,
                  "singer_name": self.singer_name,
                  "song_time": self.song_time
-            }}
+            }]}
 
 **(status意义见返回码)**
 

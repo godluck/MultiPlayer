@@ -3,9 +3,10 @@
 <head>
 	<title>audio</title>
 	<style type="text/css">
-	span{-webkit-transition:font-size 0.5s linear;font-size: 14px;}
+	span{display:inline-block;-webkit-transition:font-size 0.5s linear;font-size: 14px;padding:3px;background-color: green;border:1px solid red;min-width:1em;min-height:1.5em;vertical-align: bottom;}
 	.ontime{font-size: 20px;}
 	.read{color:red;}
+	.space{width:1em;height:1em;display: inline-block;}
 
 	#pause{width:50px;height:50px;background-color:red;}
 	#progressbox{margin-left:100px;width: 200px;height: 20px;border: 2px solid black}
@@ -25,6 +26,12 @@
 	<div id="pause"></div>
 	<div id="progressbox"><div id="progressbar"></div></div>
 	<div id="volumebox"><div id="volumebar"></div></div>
+</div>
+<div id="lycbuilder">
+	<textarea id="lycinput"></textarea>
+	<button id="commit">commit</button>
+	<div id="lycprocessor"></div>
+	<button id="process">next</button>
 </div>
 
 <script type="text/javascript">
@@ -58,6 +65,22 @@
 			a.currentTime=e.offsetX/this.offsetWidth*a.duration;
 			l.play();
 		}
+	},false);
+	document.getElementById('commit').addEventListener('click',function(){
+		var text=document.getElementById('lycinput').value;
+		document.getElementById('lycprocessor').innerHTML=text.split('\n').map(function(line){
+			if(line===""){
+				return '<p><span> </span></p>'
+			}else{
+				return '<p>\n'+line.split('').map(function(letter){
+					if(letter===' '){
+						return '<span class="space"></span>';
+					}else{
+						return '<span>'+letter+'</span>';
+					}
+				}).join('')+'\n</p>';
+			}
+		}).join('');
 	},false);
 </script>
 <script type="text/javascript" src="audio.js"></script>
