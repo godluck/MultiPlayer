@@ -5,7 +5,7 @@
 	<style type="text/css">
 	span{display:inline-block;-webkit-transition:font-size 0.5s linear;font-size: 14px;padding:3px;background-color: green;border:1px solid red;min-width:1em;min-height:1.5em;vertical-align: bottom;}
 	.ontime{font-size: 20px;}
-	.read{color:red;}
+	.read{color:red;background-color: red;}
 	.space{width:1em;height:1em;display: inline-block;}
 
 	#pause{width:50px;height:50px;background-color:red;}
@@ -16,7 +16,7 @@
 	</style>
 </head>
 <body>
-<audio controls="controls" preload="preload" loop="loop" id="audioTag">
+<audio id="audioTag">
 </audio>
 <input type="file">
 
@@ -31,17 +31,19 @@
 	<textarea id="lycinput"></textarea>
 	<button id="commit">commit</button>
 	<div id="lycprocessor"></div>
-	<button id="process">next</button>
+	<button id="process" style="position:fixed;top:40px;left:100px;">next</button>
 </div>
 
 <script type="text/javascript">
 	var a=document.getElementsByTagName("audio")[0];
 	var input=document.getElementsByTagName('input')[0];
+	var _lyc={originalLYC:null,originalTime:[],playTime:[]};
+	var _timestamp=0;
+	var _index=0;
+	var _words=document.getElementById('lycprocessor').getElementsByTagName('span');
+	var making=true;
 	input.onchange=function(){
 		a.src=getObjectURL(input.files[0]);
-		l.update();
-		l.play();
-		a.play();
 	};
 	function getObjectURL(file) {
 		var url = null;
@@ -60,28 +62,83 @@
 		progressbar.style.width=ratio+'px';
 		console.log(ratio);
 	},false);
+	a.addEventListener('ended',function(){
+		recordTime(_index);
+	},false);
 	document.getElementById('progressbox').addEventListener('click',function(e){
 		if(e.target=this){
 			a.currentTime=e.offsetX/this.offsetWidth*a.duration;
 			l.play();
+			if(making){
+				var oindex=null;
+				for(var i=0;i<_lyc.playTime.length;i++){
+					if(_lyc.playTime[i]>currentTime){
+						oindex=i;
+						break;
+					}
+				}
+				_lyc.currentTime=_lyc.currentTime.slice(0,oindex+4);
+				_index=oindex+4;
+				_timestamp=_lyc.playTime[_index];
+				jumpTo(_index);
+			}
 		}
 	},false);
 	document.getElementById('commit').addEventListener('click',function(){
 		var text=document.getElementById('lycinput').value;
-		document.getElementById('lycprocessor').innerHTML=text.split('\n').map(function(line){
+		_lyc.originalLYC=text;
+		document.getElementById('lycprocessor').innerHTML='<span></span>'+text.split('\n').map(function(line){
 			if(line===""){
 				return '<p><span> </span></p>'
 			}else{
-				return '<p>\n'+line.split('').map(function(letter){
+				return '<p>'+line.split('').map(function(letter){
 					if(letter===' '){
 						return '<span class="space"></span>';
 					}else{
 						return '<span>'+letter+'</span>';
 					}
-				}).join('')+'\n</p>';
+				}).join('')+'</p>';
 			}
 		}).join('');
+		a.play();
+		timestamp=a.currentTime;
 	},false);
+	document.getElementById('process').addEventListener('click',function(){
+		recordTime(_index);
+		_index+=1;
+		_words[_index].className='read';
+	},false);
+	function encodeUTF8(s){
+		var i,r=[],c,x;
+		for(i=0;i<s.length;i++)
+			if((c=s.charCodeAt(i))<0x80)r.push(c);
+			else if(c<0x800)r.push(0xC0+(c>>6&0x1F),0x80+(c&0x3F));
+			else {
+	 			if((x=c^0xD800)>>10==0) 
+					c=(x<<10)+(s.charCodeAt(++i)^0xDC00)+0x10000,
+					r.push(0xF0+(c>>18&0x7),0x80+(c>>12&0x3F));
+				else r.push(0xE0+(c>>12&0xF));
+				r.push(0x80+(c>>6&0x3F),0x80+(c&0x3F));
+			};
+		return r;
+	}
+	function recordTime(i){
+		_lyc.originalTime[i]=a.currentTime-timestamp;
+		_lyc.playTime[i]=a.currentTime;
+		timestamp=a.currentTime;
+		console.log(_lyc);
+	}
+	function jumpTo(index){
+		for(var i in _words){
+			if(i<index){
+				_words[i].className="read";
+			}else if(i==index){
+				_words[i].className="ontime read";
+			}else{
+				_words[i].className="";
+			}
+		}
+	}
 </script>
 <script type="text/javascript" src="audio.js"></script>
 </body>
