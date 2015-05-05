@@ -193,7 +193,6 @@ def save(request):
         if json.check_json("status", "0"):
             time_up(user)
     return json.return_json()
-<<<<<<< HEAD
 
 
 def up_time(request):
@@ -219,5 +218,3 @@ def up_time(request):
         else:
             json = Json({"status": '4'})
     return json.return_json()
-=======
->>>>>>> 5c3ee938c0fa16aaf9930cfdf8748646e76b2213
