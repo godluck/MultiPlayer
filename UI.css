@@ -23,6 +23,7 @@ ul,p{
 	overflow: hidden;
 	font-size:10px;
 	font-family:Noto Sans Chinese Regular,microsoft yahei;
+	color:white;
 }
 .page{
 	height: 100%;
@@ -32,7 +33,7 @@ ul,p{
 .navbar{
 	height:10%;
 	width: 100%;
-	background-color: #7da2ab;
+	background-color: #5fabbe;
 	box-shadow: 1px 1px #828282;
 	position: relative;
 }
@@ -66,13 +67,16 @@ ul,p{
 	margin-top: -1em;
 	top:50%;
 }
+.read{color:#78f7c9;}
+#lyc_box span,#lyc_edit_box span{width:1em;height:1em;display: inline-block;font-size: 2em;}
+#lyc_box p,#lyc_edit_box p{width: 90%;padding: 0 5%;line-height: 3em;text-align: center;color:#999999;}
 /*page_song_list*/
 #song_list{
 	background-color: #3d3d3d;
 }
 .search{
 	background-image: url(img/search.png);
-	right: 5em;
+	right: 2em;
 }
 .search_hover{
 	background-image: url(img/search_hover.png);
@@ -113,6 +117,7 @@ ul,p{
 }
 .song_box{
 	height: 13%;
+	min-height: 5em;
 	width: 100%;
 	position: relative;
 }
@@ -167,11 +172,12 @@ ul,p{
 .footer{
 	width: 100%;
 	height:12%;
+	min-height: 5em;
 	position: fixed;
 	bottom: 0;
 	background-color: #2c2c2c;
 	position: relative;
-	margin-top: 2.5em;
+	margin-top: 1.25em;
 }
 .to_song_list_button{
 	background-image: url(img/local_music.png);
@@ -206,23 +212,23 @@ ul,p{
 	margin-top: -2.5em;
 }
 /*page_player*/
-#player,#lyc_editer{
+#player,#lyc_editer,#editer_intro,#lyc_info{
 	background-color: #2c2c2c;
 }
 .return{
 	background-image: url(img/back.png);
 	left:2em;
 }
-#lyc_box{
-	height:53%;
+#lyc_box,#lyc_edit_box{
 	width: 100%;
-	overflow: hidden;
+	margin-top: 25%;
 }
 .controls{
 	height:37%;
 	width: 100%;
 	position: fixed;
 	bottom: 0;
+	background-color: #2c2c2c;
 }
 .progress{
 	height:15%;
@@ -294,7 +300,7 @@ ul,p{
 	width: 21%;
 	height: 5em;
 	background-size: auto 100%;
-	background-image: url(img/play.png);
+	background-image: url(img/stop.png);
 	float: left;
 	margin:0 6%;
 }
@@ -372,4 +378,67 @@ ul,p{
 	line-height: 3em;
 	color: #2c2c2c;
 	background-color: #c2c2c2;
+}
+/*page_editer_intro*/
+.intro{
+	width: 90%;
+	font-size: 1.5em;
+	padding: 5%;
+	color:#c2c2c2;
+}
+.Iknow{
+	width: 90%;
+	margin: 5%;
+	height: 3em;
+	line-height: 3em;
+	vertical-align: middle;
+	background-color: #4dc697;
+	font-size: 2em;
+	color: white;
+	text-align: center;
+}
+/*page_lyc_info*/
+.line{
+	width: 80%;
+	padding: 0 5%;
+	margin: 5%;
+	height: 3em;
+	line-height: 3em;
+	vertical-align: middle;
+	font-size: 1.5em;
+	color: #999999;
+	background-color: #3d3d3d;
+}
+.line>label{
+	display: inline-block;
+	width: 5em;
+}
+.line>input{
+	border:none;
+	color: #bcbcbc;
+	background-color: #3d3d3d;
+	height: 1em;
+	padding: 0.5em;
+	width: 15em;
+	font-size: 1em;
+}
+.iline{
+	display:inline-block;
+	background-color:#2c2c2c;
+	font-size: 1.5em;
+	width: 80%;
+	padding: 0 5%;
+	margin: 0 5%;
+	color:#999999;
+}	
+#iLycContent{
+	width: 86%;
+	margin: 5%;
+	padding: 2%;
+	font-size: 1em;
+	color:#bcbcbc;
+	height:15em; 
+	border:none;
+	background-color: #3d3d3d;
+	resize:none;
 }
