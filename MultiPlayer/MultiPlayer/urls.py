@@ -18,4 +18,5 @@ urlpatterns = patterns('',
                        (r'^save$', save),  # token+tmestamp sha1&json =>status
                        (r'^get$', get),  # id&secret&user => lyric
                        (r'^up_time$', up_time),  # keep login
+                       (r'MultiPlayer/static','/MultiPlayer/static' ),
 )

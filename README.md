@@ -121,7 +121,7 @@ save
 * user_name  用户名
 * secret  算法为token + timestamp sha1 后的16位字符串
 * timestamp 时间戳，缺省值为0
-* lyric json 歌词
+* lyric:json 歌词
 * song_name 歌曲名称
 * singer_name 歌手名称
 * song_time 歌曲时间

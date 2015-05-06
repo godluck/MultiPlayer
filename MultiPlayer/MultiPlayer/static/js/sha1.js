@@ -51,5 +51,5 @@ function dosha1(string){
   var hex=Array.prototype.map.call(result,function(e){
     return (e<16?"0":"")+e.toString(16);
   }).join("");
-  return hex.substr(-16,16);
+  return hex;
 }
