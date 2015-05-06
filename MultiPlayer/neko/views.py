@@ -8,6 +8,36 @@ import time
 
 
 # Create your views here.
+def time_up(user):
+    """
+    change timestamp
+    :param user:
+    :return:
+    """
+    user.timestamp = int(time.time())
+    user.save()
+
+
+def check(secret, user, timestamp):  # login time 1000
+    """
+    check the user's token
+    :param secret:
+    :param user:
+    :param timestamp:
+    :return:status
+    """
+    timestamp = int(timestamp)
+    now = int(time.time())
+    if (now - timestamp < 20)and(timestamp - user.timestamp < 1000):
+        token = user.token
+        if secret == sha1(token + str(timestamp)).hexdigest():
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
 def login(request):
     """
     :param request: user_name,pwd
@@ -18,7 +48,7 @@ def login(request):
     else:
         user_name = request.POST.get('user_name')
         pwd = request.POST.get('pwd')
-        pwd =  sha1(pwd).hexdigest()
+        pwd = sha1(pwd).hexdigest()
         try:
             user = User.objects.get(user_name=user_name)
         except ObjectDoesNotExist:
@@ -53,45 +83,25 @@ def logout(request):
         json.return_json()
     else:
         user_name = request.GET.get('user_name')
+        secret = request.POST.get("secret")
+        timestamp = request.POST.get("timestamp")
+        user = None
+        json = None
+
         try:
             user = User.objects.get(user_name=user_name)
+        except ObjectDoesNotExist:
+            json = Json({"status": "3"})
+        if check(secret, user, timestamp):
+            json = Json({"status": 0})
+        else:
+            json = Json({"status": '4'})
+        if json.check_json("status", "0"):
             user.token = ''
             user.timestamp = 0
             user.save()
             json = Json({"status": "0"})
-        except ObjectDoesNotExist:
-            json = Json({"status": "3"})
     return json.return_json()
-
-
-def time_up(user):
-    """
-    change timestamp
-    :param user:
-    :return:
-    """
-    user.timestamp = int(time.time())
-    user.save()
-
-
-def check(secret, user, timestamp):  # login time 1000
-    """
-    check the user's token
-    :param secret:
-    :param user:
-    :param timestamp:
-    :return:status
-    """
-    timestamp = int(timestamp)
-    now = int(time.time())
-    if (now - timestamp < 20)and(timestamp - user.timestamp < 1000):
-        token = user.token
-        if secret == sha1(token + str(timestamp)).hexdigest():
-            return True
-        else:
-            return False
-    else:
-        return False
 
 
 def search(request):
@@ -104,26 +114,12 @@ def search(request):
     if request.method == 'POST':
         json = Json({"status": "1"})
     else:
-        secret = request.GET.get("secret")
-        user_name = request.GET.get("user_name")
-        timestamp = request.GET.get("timestamp", '0')
         song_name = request.GET.get("song_name", '')
-        user = None
-        try:
-            user = User.objects.get(user_name=user_name)
-        except ObjectDoesNotExist:
-            json = Json({"status": "3"})
-        if json is None:
-            if check(secret, user, timestamp):
-                lists = []
-                lyrics = Lyric.objects.filter(song_name__contains=song_name)
-                for i in lyrics:
-                    lists.append(i.dic())
-                json = Json({"status": "0", "lyrics": lists})
-            else:
-                json = Json({"status": "4"})
-            if json.check_json("status", "0"):
-                time_up(user)
+        lists = []
+        lyrics = Lyric.objects.filter(song_name__contains=song_name)
+        for i in lyrics:
+            lists.append(i.dic())
+        json = Json({"status": "0", "lyrics": lists})
     return json.return_json()
 
 
@@ -136,25 +132,12 @@ def get(request):
     if request.method == 'POST':
         json = Json({"status": "1"})
     else:
-        secret = request.GET.get("secret")
-        user_name = request.GET.get("user_name")
-        timestamp = request.GET.get("timestamp", '0')
         id = request.GET.get("id")
-        user = None
         try:
-            user = User.objects.get(user_name=user_name)
+            lyric = Lyric.objects.get(id=id)
+            json = Json({"status": "0", "lyric": lyric.lyric})
         except ObjectDoesNotExist:
-            json = Json({"status": "3"})
-        if check(secret, user, timestamp):
-            try:
-                lyric = Lyric.objects.get(id=id)
-                json = Json({"status": "0", "lyric": lyric.lyric})
-            except ObjectDoesNotExist:
-                json = Json({"status": "5"})
-        else:
-            json = Json({"status": "4"})
-        if json.check_json("status", "0"):
-            time_up(user)
+            json = Json({"status": "5"})
     return json.return_json()
 
 
