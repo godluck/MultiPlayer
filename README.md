@@ -1,3 +1,7 @@
+静态页面配置及访问说明
+===================
+##修改过的文件及图片请及时放到MultiPlayer子文件夹下的static文件夹当中。##
+##本地服务器运行： 在MultPlayer子文件夹下运行 python manage.py runserver 本地访问本地的url+/static/xx.html即可访问。比如“127.0.0.0：8000/static/UI.html"
 后台api
 ===========
 ##返回码##
@@ -45,6 +49,8 @@ logout
 **请求参数:**
 
 * user_name  用户名
+* secret  算法为token + timestamp sha1 后的16位字符串
+* timestamp 时间戳，缺省值为0
 
 **返回值(json示例):**
 
@@ -64,21 +70,16 @@ search
 
 **请求参数:**
 
-* user_name  用户名
-* secret  算法为token + timestamp sha1 后的16位字符串
-* timestamp 时间戳，缺省值为0
 * song_name 想要查找的歌曲名称
 
 **返回值(json示例):**
 
 * {"status":"1"}
-* {"status":"3"}
 * {"status":"0","lyrics":[{"this is the lyric json lists"}, {"id": self.id,
                  "song_name": self.song_name,
                  "singer_name": self.singer_name,
                  "song_time": self.song_time
             }]}
-* {"status":"4"}
 
 **(status意义见返回码)**
 
@@ -93,17 +94,12 @@ get
 
 **请求参数:**
 
-* user_name  用户名
-* secret  算法为token + timestamp sha1 后的16位字符串
-* timestamp 时间戳，缺省值为0
 * id  歌词id
 
 **返回值(json示例):**
 
 * {"status":"1"}
-* {"status":"3"}
 * {"status":"5"}
-* {"status":"4"}
 * {"status":"0","lyric":{this is the lyric json that you save}}
 
 **(status意义见返回码).lyric返回值只包含歌词json不包含其他关键字**  
