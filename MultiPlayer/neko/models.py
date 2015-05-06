@@ -16,6 +16,7 @@ class Lyric(models.Model):
     singer_name = models.CharField(max_length=50, null=False, blank=False)
     song_time = models.FloatField(null=False, blank=False)
     lyric = models.TextField(null=False, blank=False)  # lyric json
+    post_timestamp = models.IntegerField(null=True, blank=True)
 
     def dic(self):
         """
@@ -24,6 +25,7 @@ class Lyric(models.Model):
         lyric = {"id": self.id,
                  "song_name": self.song_name,
                  "singer_name": self.singer_name,
-                 "song_time": self.song_time
-            }
+                 "song_time": self.song_time,
+                 "post_timestamp": self.post_timestamp
+        }
         return lyric
