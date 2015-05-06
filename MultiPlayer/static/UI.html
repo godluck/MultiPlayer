@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>UI</title>
+	<link rel="stylesheet" type="text/css" href="css/UI.css">
+	<meta charset="utf-8">
+</head>
+<body>
+	<div class="warpper">
+		<div class="page" id="song_list" style="display:block;">
+			<nav class="navbar">
+				<p class="title">本地歌曲</p>
+				<a href="javascript:g.showOrder()" class="order button"></a>
+				<ul class="order_list">
+					<a href="#">按名称排序</a>
+					<a href="#">按时间排序</a>
+				</ul>
+			</nav>
+			<ul class="songs">
+				
+			</ul>
+			<nav class="footer">
+				<a href="javascript:pageData.song_list.addSong()" class="to_song_list_button button"></a>
+				<a href="javascript:if(labels.playing){g.jumpTo('player');}" class="to_play_button button"></a>
+				<a href="javascript:g.jumpTo('editer_intro')" class="to_my_lycs button"></a>
+			</nav>
+		</div>
+		<div class="page" id="player" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('song_list')" class="return button"></a>
+				<p class="title">这里是歌名</p>
+				<a href="javascript:g.jumpTo('editer_intro')" class="search button"></a>
+			</nav>
+			<div id="lyc_box"><p>正在加载歌词...</p></div>
+			<div class="controls">
+				<div class="progress">
+					<div class="currentTime">00:00</div>
+					<div class="progress_box">
+						<div class="progressbar"></div>
+					</div>
+					<div class="duration">99:99</div>
+				</div>
+				<a href="javascript:g.play(labels.curIndex-1)" class="button" id="pre_song"></a>
+				<a href="javascript:g.pause()" class="button" id="play_pause"></a>
+				<a href="javascript:g.play(labels.curIndex+1)" class="button" id="next_song"></a>
+				<a href="#" class="button" id="share"></a>
+				<a href="javascript:g.changeOrder()" class="button" id="play_order"></a>
+				<a href="#" class="button" id="change_lyc"></a>
+			</div>
+		</div>
+		<div class="page" id="editer_intro" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('song_list')" class="return button"></a>
+				<p class="title">创建说明</p>
+			</nav>
+			<p class="intro">
+				1.填写歌曲名、歌手、自定义歌词名称、歌词内容。<br><br>
+				2.请尽量在歌词中适当换行。<br><br>
+				3.空格，标点及空白的一行会被保留在歌词中，并且会被视为一个字来记录时间（你需要自行判断歌词中这些字符的时间哦）<br><br>
+				4.点击“保存并继续”进入歌词编辑页面后，请跟随歌曲节奏点击“下一字”按钮，来确定歌词中的字的唱出时间。<br><br>
+				5.如果歌词编辑出错，可以通过点击歌曲进度条向前回退。被回退的歌词部分将被自动舍弃，等待重新编辑。<br><br>
+				6.可以通过点击“暂停”按钮暂停歌曲。
+			</p>
+			<a href="javascript:g.jumpTo('lyc_info')" class="button Iknow">我知道了</a>
+		</div>
+		<div class="page" id="lyc_info" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('editer_intro')" class="return button"></a>
+				<p class="title">创建歌词</p>
+				<a href="javascript:g.jumpTo('editer_intro')" class="help button"></a>
+			</nav>
+			<div class="line"><label for="iSongName">歌曲名</label><input type="text" name="song_name" id="iSongName"></div>
+			<div class="line"><label for="iSinger">歌手名</label><input type="text" name="singer" id="iSinger"></div>
+			<div class="line"><label for="iLycName">歌词名称</label><input type="text" name="lyc_name" id="iLycName"></div>
+			<label for="iLycContent" class="iline">歌词内容</label>
+			<textarea resize="false" name="lyc_content" id="iLycContent"></textarea>
+			<a href="javascript:g.submitLycContent()" class="button Iknow">保存并编辑</a>
+		</div>
+		<div class="page" id="lyc_editer" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('lyc_info')" class="return button"></a>
+				<p class="title">这里是歌名</p>
+				<a href="javascript:g.saveLyc()" class="confirm button"></a>
+				<a href="javascript:g.jumpTo('editer_intro')" class="help button"></a>
+			</nav>
+			<div id="lyc_edit_box"></div>
+			<div class="controls">
+				<div class="progress">
+					<div class="currentTime">00:00</div>
+					<div class="progress_box">
+						<div class="progressbar"></div>
+					</div>
+					<div class="duration">99:99</div>
+				</div>
+				<a href="javascript:g.nextLetter()" class="button" id="next_letter">下一字</a>
+				<a href="#" class="button" id="internal">间奏</a>
+				<a href="#" class="button" id="pause">暂停</a>
+			</div>
+		</div>
+	</div>
+	<div id="hidden">
+		<li class="song_box"><div class="song_info"><p class="song_name"></p><p class="singer"></p></div><a class="to_play button"></a></li>
+		<audio id="audiobox"></audio>
+		<input type="file" multiple="multiple" id="file">
+	</div>
+	<script type="text/javascript">
+	document.getElementsByClassName('warpper')[0].style.fontSize=document.body.clientWidth*0.025+'px';
+	</script>
+	<script type="text/javascript" src="js/sha1.js"></script>
+	<script type="text/javascript" src="js/UI.js"></script>
+</body>
+</html>
