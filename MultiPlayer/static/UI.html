@@ -50,7 +50,7 @@
 		</div>
 		<div class="page" id="editer_intro" style="display:none;">
 			<nav class="navbar">
-				<a href="javascript:g.jumpTo('song_list')" class="return button"></a>
+				<a href="javascript:g.jumpTo('search')" class="return button"></a>
 				<p class="title">创建说明</p>
 			</nav>
 			<p class="intro">
@@ -103,8 +103,16 @@
 				<p class="title">搜索歌词</p>
 			</nav>
 			<input type="text" name="searchbox" id="searchbox">
-			<a href="javascript:g.submitLycContent()" class="button searchb">搜索</a>
-			<ul class="search_results"></ul>
+			<a href="javascript:g.search()" class="button searchb">搜索</a>
+			<ul class="search_results"><a class="create_lyc button" href="javascript:jumpTo('editer_intro')">+创建新歌词</a></ul>
+		</div>
+		<div class="page" id="login" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.cancellogin()" class="return button"></a>
+				<p class="title">登陆</p>
+			</nav>
+			<div class="line"><label for="iUserName">用户名</label><input type="text" name="username" id="iUserName"></div>
+			<div class="line"><label for="iPassword">密码</label><input type="text" name="password" id="iPassword"></div>
 		</div>
 	</div>
 	<div id="hidden">

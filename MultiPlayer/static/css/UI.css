@@ -471,4 +471,18 @@ ul,p{
 }
 .search_results{
 	background-color: #3d3d3d;
+	margin-top: 3%;
+	overflow: auto;
+	width: 90%;
+	margin-left: 5%;
+}
+.create_lyc{
+	width: 100%;
+	font-size: 2em;
+	height: 3em;
+	color: inherit;
+	line-height: 3em;
+	vertical-align: middle;
+	text-align: center;
+	border-bottom: 1px dashed #4dc697; 
 }

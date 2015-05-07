@@ -207,18 +207,21 @@ var g={
 	},
 	searchlyc:function(song_name,index){
 		var ts=Date.now();
-		g.ajax('/search','get',g.processSearch(index),encodeURI('user_name='+labels.userName+'&timestamp='+ts+'&song_name='+song_name+'&secret='+dosha1(labels.token+ts)));
+		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
+	},
+	search:function(){
+		var song_name=document.getElementById('searchbox').value;
+		var index=labels.curIndex;
+		var ts=Date.now();
+		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
 	},
 	processSearch:function(index){
 		return function(){
 			var data=this.response;
-			if(data&&data.status==0){
+			if(data&&data.status==0&&data.lyrics.length>0){
 			pageData.player.lycs_info[index]=data.lyrics
 				if(labels.curPage.toLowerCase()=='player'){
-					var ts=Date.now();
-					var dataString='user_name'+labels.userName+
-					'secret'+dosha1(labels.token+ts)+
-					'timestamp'+ts+'id'+data.lyrics[0].id;
+					var dataString='id='+data.lyrics[0].id;
 					ajax('/get','get',function(){
 						var data=this.response;
 						if(data&&data.status==0){
@@ -226,9 +229,30 @@ var g={
 							g.bindlyc(document.getElementById('lyc_box'),data.lyric);
 						}
 					},dataString);
+				}else if(labels.curPage.toLowerCase()=='search'){
+					var pnode=document.getElementsByClassName('search_results')[0];
+					var template=document.getElementById('hidden').getElementsByClassName('song_box')[0];
+					data.lyrics.forEach(function(newsong){
+						var temp=template.cloneNode(true);
+						temp.getElementsByClassName('song_name')[0].innerHTML=newsong.song_name;
+						temp.getElementsByClassName('singer')[0].innerHTML=newsong.singer_name||'未知歌手';
+						temp.getElementsByClassName('to_play')[0].href='javascript:g.chooseLyc('+newsong.id+')';
+						pnode.appendChild(temp);
+					});
+					
 				}
 			}
 		}
+	},
+	chooseLyc:function(id){
+		ajax('/get','get',function(){
+			var data=this.response;
+			if(data&&data.status==0){
+				pageData.player.lycs[labels.curIndex]=data.lyric;
+				g.bindlyc(document.getElementById('lyc_box'),data.lyric);
+				g.jumpTo('player');
+			}
+		},'id='+id);
 	},
 	moveLycBox:function(){
 		labels.curPosition+=labels.midLine-this.offsetTop;
