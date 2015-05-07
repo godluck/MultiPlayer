@@ -169,7 +169,8 @@ def save(request):
                       song_name=song_name,
                       singer_name=singer_name,
                       song_time=song_time,
-                      lyric=lyric).save()
+                      lyric=lyric,
+                      post_timestamp=int(time.time())).save()
                 json = Json({"status": "0"})
         else:
             json = Json({"status": '4'})
