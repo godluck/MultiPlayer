@@ -262,13 +262,14 @@ var g={
 	ajax:function(url,method,callback,data){
 		var xhr=new XMLHttpRequest();
 		xhr.onload=callback;
-		xhr.responseType='json';
 		if(method.toLowerCase()=='get'){
 			xhr.open('get',url+'?'+data,true);
+			xhr.responseType='json';
 			xhr.send();
 		}else if(method.toLowerCase()=='post'){
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.open('post',url);
+			xhr.responseType='json';
 			xhr.send(data);
 		}
 	},
