@@ -22,7 +22,7 @@
 			<nav class="footer">
 				<a href="javascript:pageData.song_list.addSong()" class="to_song_list_button button"></a>
 				<a href="javascript:if(labels.playing){g.jumpTo('player');}" class="to_play_button button"></a>
-				<a href="javascript:g.jumpTo('editer_intro')" class="to_my_lycs button"></a>
+				<a href="javascript:g.tologin()" class="to_my_lycs button"></a>
 			</nav>
 		</div>
 		<div class="page" id="player" style="display:none;">
@@ -80,7 +80,7 @@
 			<nav class="navbar">
 				<a href="javascript:g.jumpTo('lyc_info')" class="return button"></a>
 				<p class="title">这里是歌名</p>
-				<a href="javascript:g.saveLyc()" class="confirm button"></a>
+				<a href="javascript:g.tologin()" class="confirm button"></a>
 				<a href="javascript:g.jumpTo('editer_intro')" class="help button"></a>
 			</nav>
 			<div id="lyc_edit_box"></div>
@@ -104,7 +104,14 @@
 			</nav>
 			<input type="text" name="searchbox" id="searchbox">
 			<a href="javascript:g.search()" class="button searchb">搜索</a>
-			<ul class="search_results"><a class="create_lyc button" href="javascript:jumpTo('editer_intro')">+创建新歌词</a></ul>
+			<ul class="search_results"><a class="create_lyc button" href="javascript:g.jumpTo('editer_intro')">+创建新歌词</a></ul>
+		</div>
+		<div class="page" id="my_lyc" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('song_list')" class="return button"></a>
+				<p class="title">我的歌词</p>
+			</nav>
+			<ul class="my_lycs"></ul>
 		</div>
 		<div class="page" id="login" style="display:none;">
 			<nav class="navbar">
@@ -112,7 +119,8 @@
 				<p class="title">登陆</p>
 			</nav>
 			<div class="line"><label for="iUserName">用户名</label><input type="text" name="username" id="iUserName"></div>
-			<div class="line"><label for="iPassword">密码</label><input type="text" name="password" id="iPassword"></div>
+			<div class="line"><label for="iPassword">密码</label><input type="password" name="password" id="iPassword"></div>
+			<a class="button Iknow" href="javascript:g.login()">登陆/注册</a>
 		</div>
 	</div>
 	<div id="hidden">

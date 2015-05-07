@@ -212,7 +212,7 @@ ul,p{
 	margin-top: -2.5em;
 }
 /*page_player*/
-#player,#lyc_editer,#editer_intro,#lyc_info,#search{
+#player,#lyc_editer,#editer_intro,#lyc_info,#search,#login,#my_lyc{
 	background-color: #2c2c2c;
 }
 .return{
@@ -485,4 +485,10 @@ ul,p{
 	vertical-align: middle;
 	text-align: center;
 	border-bottom: 1px dashed #4dc697; 
+}
+/*login*/
+#login{
+	z-index: 2;
+	position: absolute;
+	top: 0;
 }

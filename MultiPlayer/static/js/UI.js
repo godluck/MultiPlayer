@@ -118,7 +118,7 @@ var g={
 		if(!pageData.player.lycs[i]){
 			g.searchlyc(pageData.song_list.songs[i].name,i);
 		}else{
-			bindlyc(document.getElementById('lyc_box'),pageData.player.lycs[i])
+			g.bindlyc(document.getElementById('lyc_box'),pageData.player.lycs[i])
 		}
 	},
 	jumpTo:function(pageName){
@@ -267,8 +267,8 @@ var g={
 			xhr.responseType='json';
 			xhr.send();
 		}else if(method.toLowerCase()=='post'){
-			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.open('post',url);
+			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.responseType='json';
 			xhr.send(data);
 		}
@@ -280,6 +280,9 @@ var g={
 			lycName:document.getElementById('iLycName').value,
 			lycContent:document.getElementById('iLycContent').value
 		}
+		pageData.lyc_editer.lycTime=[];
+		pageData.lyc_editer.lycPlayTime=[];
+		labels.lycIndex=0;
 		document.getElementById('lyc_edit_box').innerHTML='<span></span>'+pageData.lyc_editer.lycFactory.lycContent.split('\n').map(function(line){
 			if(line===""){
 				return '<p><span> </span></p>'
@@ -343,22 +346,21 @@ var g={
 		var new_lyc={
 			originalLYC:pageData.lyc_editer.lycFactory.lycContent,
 			originalTime:pageData.lyc_editer.lycTime
-		}
+		}		
 		if(labels.userName!=''){
 			var ts=Date.now();
-			var dataString='user_name'+labels.userName+
-				'secret'+dosha1(labels.token+ts)+
-				'timestamp'+ts+
-				'song_name'+pageData.lyc_editer.lycFactory.songName+
-				'singer_name'+pageData.lyc_editer.lycFactory.singer+
-				'song_name'+labels.player.duration+
-				'lyric'+JSON.stringify(new_lyc);
-			ajax('/save','post',console.log,dataString);
-		}else{
+			var dataString='user_name='+labels.userName+
+				'&secret='+dosha1(labels.token+ts)+
+				'&timestamp='+ts+
+				'&song_name='+pageData.lyc_editer.lycFactory.songName+
+				'&singer_name='+pageData.lyc_editer.lycFactory.singer+
+				'&song_time='+labels.player.duration+
+				'&lyric='+JSON.stringify(new_lyc);
+			g.ajax('/save','post',console.log,dataString);
 			
 		}
 		pageData.player.lycs[labels.curIndex]=new_lyc;
-		g.bindlyc(document.getElementById('lyc_box'),new_lyc);
+		g.play(labels.curIndex);
 		g.jumpTo('player');
 	},
 	showOrder:function(){
@@ -370,9 +372,54 @@ var g={
 		}else{
 			ol.style.display='block';
 		}
+	},
+	tologin:function(){
+		labels.loginPage=labels.curPage;
+		if(labels.userName==''){
+			document.getElementById('login').style.display='block';
+		}else{
+			if(labels.loginPage=='song_list'){
+				g.jumpTo('my_lyc');
+			}else if(labels.loginPage=='lyc_editer'){
+				g.saveLyc();
+			}
+		}
+	},
+	cancellogin:function(){
+		if(labels.loginPage=='song_list'){
+			g.jumpTo('song_list');
+		}else if(labels.loginPage=='lyc_editer'){
+			g.saveLyc();
+		}
+	},
+	login:function(){
+		var psw=document.getElementById('iPassword').value;
+		var user=document.getElementById('iUserName').value;
+		labels.iun=user;
+		g.ajax('/login','post',g.processlogin,'user_name='+user+'&pwd='+psw);
+	},
+	processlogin:function(){
+		labels.userName=labels.iun;
+		labels.token=this.response.token;
+		var pnode=document.getElementsByClassName('my_lycs')[0];
+		var template=document.getElementById('hidden').getElementsByClassName('song_box')[0];
+		this.response.lyrics.forEach(function(newsong){
+			var temp=template.cloneNode(true);
+			temp.getElementsByClassName('song_name')[0].innerHTML=newsong.song_name;
+			temp.getElementsByClassName('singer')[0].innerHTML=newsong.singer_name||'未知歌手';
+			temp.getElementsByClassName('to_play')[0].href='javascript:g.chooseLyc('+newsong.id+')';
+			pnode.appendChild(temp);
+		});
+		if(labels.loginPage=='lyc_editer'){
+			g.saveLyc();
+		}else if(labels.loginPage=='song_list'){
+			g.jumpTo('my_lyc');
+		}
+		document.getElementById('login').style.display='none';
 	}
 };
 var labels={
+	loginPage:'',
 	curPosition:0,
 	midLine:document.body.offsetHeight*.35,
 	curIndex:0,
@@ -382,6 +429,7 @@ var labels={
 	tout:null,
 	currentTime:0,
 	curLyc:null,
+	iun:'',
 	userName:'',
 	token:0,
 	player:document.getElementById('audiobox'),
