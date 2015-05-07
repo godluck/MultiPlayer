@@ -129,14 +129,14 @@ var g={
 	pause:function(){
 		labels.player.pause();
 		document.getElementById('play_pause').href='javascript:g.resume();g.playlyc();';
-		document.getElementById('play_pause').style.backgroundImage='url(img/play.png)';
+		document.getElementById('play_pause').style.backgroundImage='url(css/img/play.png)';
 		document.getElementById('pause').href='javascript:g.resume()';
 		document.getElementById('pause').innerHTML='播放';
 	},
 	resume:function(){
 		labels.player.play();
 		document.getElementById('play_pause').href='javascript:g.pause()';
-		document.getElementById('play_pause').style.backgroundImage='url(img/stop.png)';
+		document.getElementById('play_pause').style.backgroundImage='url(css/img/stop.png)';
 		document.getElementById('pause').href='javascript:g.pause()';
 		document.getElementById('pause').innerHTML='暂停';
 	},
@@ -270,7 +270,7 @@ var g={
 		labels.player.pause();
 		labels.playing=false;
 		window.requestAnimFrame(g.moveLycBox.bind(pageData.lyc_editer.words[0]));
-		setTimeout(function(){labels.player.play();labels.timestamp=labels.player.currentTime;},2000);
+		setTimeout(function(){g.resume();labels.timestamp=labels.player.currentTime;},2000);
 	},
 	processLyc:function(i){
 		pageData.lyc_editer.lycTime[i]=Math.floor(labels.player.currentTime*1000)-labels.timestamp;
@@ -330,10 +330,11 @@ var g={
 				'lyric'+JSON.stringify(new_lyc);
 			ajax('/save','post',console.log,dataString);
 		}else{
-
+			
 		}
 		pageData.player.lycs[labels.curIndex]=new_lyc;
 		g.bindlyc(document.getElementById('lyc_box'),new_lyc);
+		g.jumpTo('player');
 	},
 	showOrder:function(){
 		var ol=document.getElementsByClassName('order_list')[0];

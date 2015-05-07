@@ -212,7 +212,7 @@ ul,p{
 	margin-top: -2.5em;
 }
 /*page_player*/
-#player,#lyc_editer,#editer_intro,#lyc_info{
+#player,#lyc_editer,#editer_intro,#lyc_info,#search{
 	background-color: #2c2c2c;
 }
 .return{
@@ -441,4 +441,34 @@ ul,p{
 	border:none;
 	background-color: #3d3d3d;
 	resize:none;
+}
+/*search*/
+#searchbox{
+	width: 60%;
+	height: 3em;
+	margin-left: 5%;
+	border:none;
+	color: inherit;
+	font-size: 2em;
+	background-color: #5d5d5d;
+	padding: 0 0.5em 0 0.5em;
+	line-height: 3em;
+	box-sizing:border-box;
+	vertical-align: middle;
+	margin-top:3%;
+}
+.searchb{
+	height: 3em;
+	width: 30%;
+	display: inline-block;
+	background-color: #4dc697;
+	font-size: 2em;
+	color: inherit;
+	line-height: 3em;
+	vertical-align: middle;
+	text-align: center;
+	margin-top: 3%;
+}
+.search_results{
+	background-color: #3d3d3d;
 }

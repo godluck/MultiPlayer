@@ -45,7 +45,7 @@
 				<a href="javascript:g.play(labels.curIndex+1)" class="button" id="next_song"></a>
 				<a href="#" class="button" id="share"></a>
 				<a href="javascript:g.changeOrder()" class="button" id="play_order"></a>
-				<a href="#" class="button" id="change_lyc"></a>
+				<a href="javascript:g.jumpTo('search')" class="button" id="change_lyc"></a>
 			</div>
 		</div>
 		<div class="page" id="editer_intro" style="display:none;">
@@ -96,6 +96,15 @@
 				<a href="#" class="button" id="internal">间奏</a>
 				<a href="#" class="button" id="pause">暂停</a>
 			</div>
+		</div>
+		<div class="page" id="search" style="display:none;">
+			<nav class="navbar">
+				<a href="javascript:g.jumpTo('player')" class="return button"></a>
+				<p class="title">搜索歌词</p>
+			</nav>
+			<input type="text" name="searchbox" id="searchbox">
+			<a href="javascript:g.submitLycContent()" class="button searchb">搜索</a>
+			<ul class="search_results"></ul>
 		</div>
 	</div>
 	<div id="hidden">
