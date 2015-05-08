@@ -10,7 +10,7 @@
 		<div class="page" id="song_list" style="display:block;">
 			<nav class="navbar">
 				<p class="title">本地歌曲</p>
-				<a href="javascript:g.showOrder()" class="order button"></a>
+				<a href="javascript:g.showOrder()" class="order button" style="display:none;"></a>
 				<ul class="order_list">
 					<a href="#">按名称排序</a>
 					<a href="#">按时间排序</a>
@@ -29,7 +29,6 @@
 			<nav class="navbar">
 				<a href="javascript:g.jumpTo('song_list')" class="return button"></a>
 				<p class="title">这里是歌名</p>
-				<a href="javascript:g.jumpTo('editer_intro')" class="search button"></a>
 			</nav>
 			<div id="lyc_box"><p>正在加载歌词...</p></div>
 			<div class="controls">
@@ -40,9 +39,9 @@
 					</div>
 					<div class="duration">99:99</div>
 				</div>
-				<a href="javascript:g.play(labels.curIndex-1)" class="button" id="pre_song"></a>
+				<a href="javascript:g.play(labels.curIndex-1)" class="button" id="pre_song" title="上一首"></a>
 				<a href="javascript:g.pause()" class="button" id="play_pause"></a>
-				<a href="javascript:g.play(labels.curIndex+1)" class="button" id="next_song"></a>
+				<a href="javascript:g.play(labels.curIndex+1)" class="button" id="next_song" title="下一首"></a>
 				<a href="#" class="button" id="share"></a>
 				<a href="javascript:g.changeOrder()" class="button" id="play_order"></a>
 				<a href="javascript:g.jumpTo('search')" class="button" id="change_lyc"></a>
@@ -121,12 +120,13 @@
 			<div class="line"><label for="iUserName">用户名</label><input type="text" name="username" id="iUserName"></div>
 			<div class="line"><label for="iPassword">密码</label><input type="password" name="password" id="iPassword"></div>
 			<a class="button Iknow" href="javascript:g.login()">登陆/注册</a>
+			<p class="line" id="err"></p>
 		</div>
 	</div>
 	<div id="hidden">
 		<li class="song_box"><div class="song_info"><p class="song_name"></p><p class="singer"></p></div><a class="to_play button"></a></li>
 		<audio id="audiobox"></audio>
-		<input type="file" multiple="multiple" id="file">
+		<input type="file" multiple="multiple" id="file" accept="audio/mp3">
 	</div>
 	<script type="text/javascript">
 	document.getElementsByClassName('warpper')[0].style.fontSize=document.body.clientWidth*0.025+'px';

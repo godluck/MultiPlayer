@@ -8,21 +8,23 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
           };
 })();
+var _$=document.getElementById.bind(document);
+var __$=document.getElementsByClassName.bind(document);
 var pageData={
 	song_list:{
 		songs:[],
 		addSong:function(){
-			var p=document.getElementById('file');
+			var p=_$('file');
 			var _songs=this.songs;
-			var template=document.getElementById('hidden').getElementsByClassName('song_box')[0];
+			var template=_$('hidden').getElementsByClassName('song_box')[0];
 			p.onchange=function(){
-				newsongs=Array.prototype.reduce.call(this.files,function(pre,cur,index,arr){
-					var tempsong={url:g.getObjectURL(cur),name:cur.name};
+				var newsongs=Array.prototype.reduce.call(this.files,function(pre,cur){
+					var tempsong={url:g.getObjectURL(cur),name:cur.name.substr(0,cur.name.lastIndexOf('.'))};
 					pre.push(tempsong);
 					_songs.push(tempsong);
 					return pre;
 				},[]);
-				var pnode=document.getElementsByClassName('songs')[0];
+				var pnode=__$('songs')[0];
 				newsongs.forEach(function(newsong){
 					var temp=template.cloneNode(true);
 					temp.getElementsByClassName('song_name')[0].innerHTML=newsong.name;
@@ -59,9 +61,9 @@ var g={
 		return url;
 	},
 	init:function(a){
-		var page1=document.getElementById('player');
-		var page2=document.getElementById('lyc_editer');
-		a.addEventListener('playing',function(e){
+		var page1=_$('player');
+		var page2=_$('lyc_editer');
+		a.addEventListener('playing',function(){
 			page1.getElementsByClassName('duration')[0].innerHTML=Math.floor(a.duration/60)+':'+Math.floor(a.duration % 60);
 			page2.getElementsByClassName('duration')[0].innerHTML=Math.floor(a.duration/60)+':'+Math.floor(a.duration % 60);
 		});
@@ -77,10 +79,9 @@ var g={
 		})
 		a.addEventListener('ended',function(){
 			if(labels.playing){
-				var ob=document.getElementById('play_order');
 				switch(labels.order){
 					case 0:
-					g.resume();
+					g.play(labels.curIndex);
 					break;
 					case 1:
 					g.play(labels.curIndex+1);
@@ -112,33 +113,36 @@ var g={
 			g.resume();
 		}
 		a.src=pageData.song_list.songs[i].url;
-		document.getElementById('player').getElementsByClassName('title')[0].innerHTML=pageData.song_list.songs[i].name;
+		_$('player').getElementsByClassName('title')[0].innerHTML=pageData.song_list.songs[i].name;
+		_$('lyc_box').innerHTML='<p>正在加载歌词...</p>';
 		a.play();
 		labels.playing=true;
 		if(!pageData.player.lycs[i]){
 			g.searchlyc(pageData.song_list.songs[i].name,i);
 		}else{
-			g.bindlyc(document.getElementById('lyc_box'),pageData.player.lycs[i])
+			g.bindlyc(_$('lyc_box'),pageData.player.lycs[i]);
 		}
+		_$('searchbox').value=pageData.song_list.songs[i].name;
+		_$('iSongName').value=pageData.song_list.songs[i].name;
 	},
 	jumpTo:function(pageName){
-		document.getElementById(labels.curPage).style.display='none';
-		document.getElementById(pageName).style.display='block';
+		_$(labels.curPage).style.display='none';
+		_$(pageName).style.display='block';
 		labels.curPage=pageName;
 	},
 	pause:function(){
 		labels.player.pause();
-		document.getElementById('play_pause').href='javascript:g.resume();g.playlyc();';
-		document.getElementById('play_pause').style.backgroundImage='url(css/img/play.png)';
-		document.getElementById('pause').href='javascript:g.resume()';
-		document.getElementById('pause').innerHTML='播放';
+		_$('play_pause').href='javascript:g.resume();g.playlyc();';
+		_$('play_pause').style.backgroundImage='url(css/img/play.png)';
+		_$('pause').href='javascript:g.resume()';
+		_$('pause').innerHTML='播放';
 	},
 	resume:function(){
 		labels.player.play();
-		document.getElementById('play_pause').href='javascript:g.pause()';
-		document.getElementById('play_pause').style.backgroundImage='url(css/img/stop.png)';
-		document.getElementById('pause').href='javascript:g.pause()';
-		document.getElementById('pause').innerHTML='暂停';
+		_$('play_pause').href='javascript:g.pause()';
+		_$('play_pause').style.backgroundImage='url(css/img/stop.png)';
+		_$('pause').href='javascript:g.pause()';
+		_$('pause').innerHTML='暂停';
 	},
 	changeOrder:function(){
 		labels.order+=1;
@@ -156,7 +160,7 @@ var g={
 		}
 	},
 	bindlyc:function(targetDom,olyc){
-		olyc.playTime=olyc.originalTime.reduce(function(pre,cur,index,arr){
+		olyc.playTime=olyc.originalTime.reduce(function(pre,cur,index){
 			pre.push((index<1)?cur:pre[index-1]+cur);
 			return pre;
 		},[]);
@@ -219,30 +223,36 @@ var g={
 		clearTimeout(labels.tout);
 	},
 	searchlyc:function(song_name,index){
-		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
+		g.ajax('/search','get',g.processSearch(index),('song_name='+song_name));
 	},
 	search:function(){
-		var song_name=document.getElementById('searchbox').value;
+		var song_name=_$('searchbox').value;
 		var index=labels.curIndex;
-		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
+		g.ajax('/search','get',g.processSearch(index),('song_name='+song_name));
 	},
 	processSearch:function(index){
 		return function(){
 			var data=this.response;
-			if(data&&data.status==0&&data.lyrics.length>0){
+			if(data&&data.status==0){
 			pageData.player.lycs_info[index]=data.lyrics
-				if(labels.curPage.toLowerCase()=='player'){
+				if(data.lyrics.length>0&&labels.curPage.toLowerCase()=='player'){
 					var dataString='id='+data.lyrics[0].id;
-					ajax('/get','get',function(){
+					g.ajax('/get','get',function(){
 						var data=this.response;
 						if(data&&data.status==0){
-							pageData.player.lycs[index]=data.lyric;
-							g.bindlyc(document.getElementById('lyc_box'),data.lyric);
+							pageData.player.lycs[index]=JSON.parse(data.lyric);
+							g.bindlyc(_$('lyc_box'),JSON.parse(data.lyric));
 						}
 					},dataString);
+				}else if(data.lyrics.length==0&&labels.curPage.toLowerCase()=='player'){
+					_$('lyc_box').innerHTML='<p id="no_lyc">无法找到歌词</p>'
+					window.requestAnimFrame(g.moveLycBox.bind(_$('no_lyc')));
 				}else if(labels.curPage.toLowerCase()=='search'){
-					var pnode=document.getElementsByClassName('search_results')[0];
-					var template=document.getElementById('hidden').getElementsByClassName('song_box')[0];
+					var pnode=__$('search_results')[0];
+					Array.prototype.forEach.call(pnode.getElementsByClassName('song_box'),function(sb){
+						sb.parentNode.removeChild(sb);
+					});
+					var template=_$('hidden').getElementsByClassName('song_box')[0];
 					data.lyrics.forEach(function(newsong){
 						var temp=template.cloneNode(true);
 						temp.getElementsByClassName('song_name')[0].innerHTML=newsong.song_name;
@@ -256,19 +266,19 @@ var g={
 		}
 	},
 	chooseLyc:function(id){
-		ajax('/get','get',function(){
+		g.ajax('/get','get',function(){
 			var data=this.response;
 			if(data&&data.status==0){
-				pageData.player.lycs[labels.curIndex]=data.lyric;
-				g.bindlyc(document.getElementById('lyc_box'),data.lyric);
+				pageData.player.lycs[labels.curIndex]=JSON.parse(data.lyric);
+				g.bindlyc(_$('lyc_box'),JSON.parse(data.lyric));
 				g.jumpTo('player');
 			}
 		},'id='+id);
 	},
 	moveLycBox:function(){
 		labels.curPosition+=labels.midLine-this.offsetTop;
-		document.getElementById('lyc_box').style.marginTop=labels.curPosition+'px';
-		document.getElementById('lyc_edit_box').style.marginTop=labels.curPosition+'px';
+		_$('lyc_box').style.marginTop=labels.curPosition+'px';
+		_$('lyc_edit_box').style.marginTop=labels.curPosition+'px';
 	},
 	ajax:function(url,method,callback,data){
 		var xhr=new XMLHttpRequest();
@@ -286,15 +296,15 @@ var g={
 	},
 	submitLycContent:function(){
 		pageData.lyc_editer.lycFactory={
-			songName:document.getElementById('iSongName').value,
-			singer:document.getElementById('iSinger').value,
-			lycName:document.getElementById('iLycName').value,
-			lycContent:document.getElementById('iLycContent').value
+			songName:_$('iSongName').value,
+			singer:_$('iSinger').value,
+			lycName:_$('iLycName').value,
+			lycContent:_$('iLycContent').value
 		}
 		pageData.lyc_editer.lycTime=[];
 		pageData.lyc_editer.lycPlayTime=[];
 		labels.lycIndex=0;
-		document.getElementById('lyc_edit_box').innerHTML='<span></span>'+pageData.lyc_editer.lycFactory.lycContent.split('\n').map(function(line){
+		_$('lyc_edit_box').innerHTML='<span></span>'+pageData.lyc_editer.lycFactory.lycContent.split('\n').map(function(line){
 			if(line===""){
 				return '<p><span> </span></p>'
 			}else{
@@ -303,7 +313,7 @@ var g={
 				}).join('')+'</p>';
 			}
 		}).join('');
-		pageData.lyc_editer.words=document.getElementById('lyc_edit_box').getElementsByTagName('span');
+		pageData.lyc_editer.words=_$('lyc_edit_box').getElementsByTagName('span');
 		g.jumpTo('lyc_editer');
 		labels.player.currentTime=0;
 		labels.player.pause();
@@ -375,7 +385,7 @@ var g={
 		g.jumpTo('player');
 	},
 	showOrder:function(){
-		var ol=document.getElementsByClassName('order_list')[0];
+		var ol=__$('order_list')[0];
 		if(ol.style.display=='none'){
 			ol.style.display='block';
 		}else if(ol.style.display=='block'){
@@ -387,7 +397,7 @@ var g={
 	tologin:function(){
 		labels.loginPage=labels.curPage;
 		if(labels.userName==''){
-			document.getElementById('login').style.display='block';
+			_$('login').style.display='block';
 		}else{
 			if(labels.loginPage=='song_list'){
 				g.jumpTo('my_lyc');
@@ -404,29 +414,58 @@ var g={
 		}
 	},
 	login:function(){
-		var psw=document.getElementById('iPassword').value;
-		var user=document.getElementById('iUserName').value;
+		var psw=_$('iPassword').value;
+		var user=_$('iUserName').value;
+		var err=_$('err');
+		if(user==''){
+			err.innerHTML='用户名不能为空';
+			err.style.display='block';
+			return;
+		}else if(user.split(' ').length>1){
+			err.innerHTML='用户名不能包含空格';
+			err.style.display='block';
+			return;
+		}else{
+			err.style.display='none';
+		}
+		if(psw==''){
+			err.innerHTML='密码不能为空';
+			err.style.display='block';
+			return;
+		}else{
+			err.style.display='none';
+		}
 		labels.iun=user;
 		g.ajax('/login','post',g.processlogin,'user_name='+user+'&pwd='+psw);
 	},
 	processlogin:function(){
-		labels.userName=labels.iun;
-		labels.token=this.response.token;
-		var pnode=document.getElementsByClassName('my_lycs')[0];
-		var template=document.getElementById('hidden').getElementsByClassName('song_box')[0];
-		this.response.lyrics.forEach(function(newsong){
-			var temp=template.cloneNode(true);
-			temp.getElementsByClassName('song_name')[0].innerHTML=newsong.song_name;
-			temp.getElementsByClassName('singer')[0].innerHTML=newsong.singer_name||'未知歌手';
-			temp.getElementsByClassName('to_play')[0].href='javascript:g.chooseLyc('+newsong.id+')';
-			pnode.appendChild(temp);
-		});
-		if(labels.loginPage=='lyc_editer'){
-			g.saveLyc();
-		}else if(labels.loginPage=='song_list'){
-			g.jumpTo('my_lyc');
+		if(this.response&&this.response.status==0){
+			labels.userName=labels.iun;
+			labels.token=this.response.token;
+			var pnode=__$('my_lycs')[0];
+			var template=_$('hidden').getElementsByClassName('song_box')[0];
+			this.response.lyrics.forEach(function(newsong){
+				var temp=template.cloneNode(true);
+				temp.getElementsByClassName('song_name')[0].innerHTML=newsong.song_name;
+				temp.getElementsByClassName('singer')[0].innerHTML=newsong.singer_name||'未知歌手';
+				temp.getElementsByClassName('to_play')[0].href='javascript:g.chooseLyc('+newsong.id+')';
+				pnode.appendChild(temp);
+			});
+			if(labels.loginPage=='lyc_editer'){
+				g.saveLyc();
+			}else if(labels.loginPage=='song_list'){
+				g.jumpTo('my_lyc');
+			}
+			_$('login').style.display='none';
+		}else{
+			_$('err').innerHTML='登录失败';
+			_$('err').style.display='none';
 		}
-		document.getElementById('login').style.display='none';
+	},
+	keepon:function(){
+		if(labels.userName!=''){
+
+		}
 	}
 };
 var labels={
@@ -443,7 +482,7 @@ var labels={
 	iun:'',
 	userName:'',
 	token:0,
-	player:document.getElementById('audiobox'),
+	player:_$('audiobox'),
 	timestamp:0,
 	lycIndex:0
 };
