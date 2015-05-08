@@ -177,19 +177,21 @@ var g={
 	playlyc:function(){
 		g.pauselyc();
 		var oindex=null;
-		for(var i in labels.curLyc.playTime){
-			if(labels.curLyc.playTime[i]>labels.currentTime){
-				oindex={index:i,time:labels.curLyc.playTime[i]-labels.currentTime};
-				break;
+		if(labels.curLyc!=null){
+			for(var i in labels.curLyc.playTime){
+				if(labels.curLyc.playTime[i]>labels.currentTime){
+					oindex={index:i,time:labels.curLyc.playTime[i]-labels.currentTime};
+					break;
+				}
 			}
-		}
-		if(oindex){
-			g.jumpTolyc(oindex.index);
-			if(!labels.player.paused){
-				labels.tout=setTimeout(g.next.bind(this,parseInt(oindex.index)+1),oindex.time);
+			if(oindex){
+				g.jumpTolyc(oindex.index);
+				if(!labels.player.paused){
+					labels.tout=setTimeout(g.next.bind(this,parseInt(oindex.index)+1),oindex.time);
+				}
+			}else{
+				g.jumpTolyc(labels.curLyc.playTime.length);
 			}
-		}else{
-			g.jumpTolyc(labels.curLyc.playTime.length);
 		}
 	},
 	jumpTolyc:function(index){
