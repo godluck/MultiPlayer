@@ -217,13 +217,11 @@ var g={
 		clearTimeout(labels.tout);
 	},
 	searchlyc:function(song_name,index){
-		var ts=Date.now();
 		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
 	},
 	search:function(){
 		var song_name=document.getElementById('searchbox').value;
 		var index=labels.curIndex;
-		var ts=Date.now();
 		g.ajax('/search','get',g.processSearch(index),encodeURI('song_name='+song_name));
 	},
 	processSearch:function(index){
@@ -359,7 +357,7 @@ var g={
 			originalTime:pageData.lyc_editer.lycTime
 		}		
 		if(labels.userName!=''){
-			var ts=Date.now();
+			var ts=(Date.now()+'').slice(0,-3);
 			var dataString='user_name='+labels.userName+
 				'&secret='+dosha1(labels.token+ts)+
 				'&timestamp='+ts+
