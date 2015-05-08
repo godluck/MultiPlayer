@@ -49,7 +49,7 @@ logout
 **请求参数:**
 
 * user_name  用户名
-* secret  算法为token + timestamp sha1 后的16位字符串
+* secret  算法为token + timestamp sha1 后的16进制字符串
 * timestamp 时间戳，缺省值为0
 
 **返回值(json示例):**
@@ -115,7 +115,7 @@ save
 **请求参数:**
 
 * user_name  用户名
-* secret  算法为token + timestamp sha1 后的16位字符串
+* secret  算法为token + timestamp sha1 后的16进制字符串
 * timestamp 时间戳，缺省值为0
 * lyric json 歌词
 * song_name 歌曲名称
@@ -144,7 +144,7 @@ up_time
 
 * user_name  用户名
 * pwd        密码
-* secret  算法为token + timestamp sha1 后的16位字符串
+* secret  算法为token + timestamp sha1 后的16进制字符串
 * timestamp 时间戳，缺省值为0
 
 **返回值(json示例):**
