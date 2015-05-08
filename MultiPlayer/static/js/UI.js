@@ -143,6 +143,17 @@ var g={
 	changeOrder:function(){
 		labels.order+=1;
 		labels.order%=3;
+		switch(labels.order){
+			case 0:
+			document.querySelector('#play_order').style.backgroundImage='url(css/img/single.png)';
+			break;
+			case 1:
+			document.querySelector('#play_order').style.backgroundImage='url(css/img/inorder.png)';
+			break;
+			case 2:
+			document.querySelector('#play_order').style.backgroundImage='url(css/img/random.png)';
+			break;
+		}
 	},
 	bindlyc:function(targetDom,olyc){
 		olyc.playTime=olyc.originalTime.reduce(function(pre,cur,index,arr){
@@ -356,7 +367,7 @@ var g={
 				'&singer_name='+pageData.lyc_editer.lycFactory.singer+
 				'&song_time='+labels.player.duration+
 				'&lyric='+JSON.stringify(new_lyc);
-			g.ajax('/save','post',console.log,dataString);
+			g.ajax('/save','post',function(){console.log(this.response)},dataString);
 			
 		}
 		pageData.player.lycs[labels.curIndex]=new_lyc;
