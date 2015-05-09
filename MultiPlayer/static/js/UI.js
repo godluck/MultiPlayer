@@ -1,3 +1,4 @@
+
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
           window.webkitRequestAnimationFrame ||
@@ -10,6 +11,12 @@ window.requestAnimFrame = (function(){
 })();
 var _$=document.getElementById.bind(document);
 var __$=document.getElementsByClassName.bind(document);
+var info = navigator.userAgent;
+if(info.indexOf("iPod")!=-1 || info.indexOf("iPad")!=-1 || info.indexOf("iPhone")!=-1 || info.indexOf("Android")!=-1){
+	if(info.indexOf('Firefox')!=-1){
+		_$('file').accept='audio/wave';
+	}
+}
 var pageData={
 	song_list:{
 		songs:[],
@@ -421,7 +428,7 @@ var g={
 			err.innerHTML='用户名不能为空';
 			err.style.display='block';
 			return;
-		}else if(user.split(' ').length>1){
+		}else if(user.indexOf(' ')>1){
 			err.innerHTML='用户名不能包含空格';
 			err.style.display='block';
 			return;
