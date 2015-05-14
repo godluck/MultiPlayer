@@ -385,6 +385,8 @@ ul,p{
 	font-size: 1.5em;
 	padding: 5%;
 	color:#c2c2c2;
+	max-height: 65%;
+	overflow: auto;
 }
 .Iknow{
 	width: 90%;
