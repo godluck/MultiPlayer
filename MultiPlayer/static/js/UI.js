@@ -111,6 +111,7 @@ var g={
 			}
 			g.traceBackLyc();
 		},false);
+		_$('player').style.display='none';
 	},
 	play:function(i){
 		i=(i+pageData.song_list.songs.length)%pageData.song_list.songs.length;
